@@ -11,17 +11,18 @@ public class WordDocument extends Document {
 	private Date documentCreationDate;
 
 	// Constructors
-	public WordDocument()
-	{
-		this(new Date() + "-New word document");
+	public WordDocument() {
+		this(new Date().getTime() + "-New word document");
 	}
-	public WordDocument(String name)
-	{
+	public WordDocument(String name) {
 		this.documentName = name;
 		this.documentCreationDate = new Date();
 		this.documentText = new StringBuffer();
 	}
-	
+	public WordDocument(String name, String text) {
+		this(name);
+		this.documentText.append(text);
+	} 
 
 	// Access methods
 	@Override
@@ -61,5 +62,9 @@ public class WordDocument extends Document {
 			documentOutprint.append(separator);
 		}
 		return documentOutprint.toString();
+	}
+	@Override
+	public DocumentType getDocumentType() {
+		return DocumentType.WordDocument;
 	}
 }

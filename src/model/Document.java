@@ -14,7 +14,8 @@ public abstract class Document {
 	public abstract void 		 setDocumentText(StringBuffer documentText);
 	public abstract Date		 getDocumentCreationDate();
 	public abstract int			 getWordsForLine();
-
+	public abstract DocumentType getDocumentType();
+	
 	public int getDocumentSize() {
 		return this.getDocumentText().length();
 	}
@@ -64,6 +65,11 @@ public abstract class Document {
 	public void deleteAllText() {
 		getDocumentText().delete(0, getDocumentText().length());
 	}
+	public void setText(String text) {
+		this.deleteAllText();
+		getDocumentText().append(text);
+	}
+	
 	public abstract String printFile();
 
 	protected String[] documentTextInLines()

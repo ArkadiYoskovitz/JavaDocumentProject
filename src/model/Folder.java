@@ -14,6 +14,13 @@ public class Folder {
 	{
 		this.folderName = name;
 		this.files = new ArrayList<Document>();
+		this.files.add(new WordDocument());
+		this.files.add(new PlainTextDocument());
+		this.files.add(new PlainTextDocument());
+		this.files.add(new WordDocument());
+		this.files.add(new PlainTextDocument());
+		this.files.add(new PlainTextDocument());
+		this.files.add(new WordDocument());
 	}
 	
 	// Access methods
@@ -28,12 +35,18 @@ public class Folder {
 		return files;
 	}
 
+	// Override Methods
+	@Override
+	public String toString() {
+		return getFolderName();
+	}
+	
 	// Methods
 	public void deleteFolderContent()
 	{
 		getFiles().clear();
 	}
-
+	
 	public void    addDocument(Document doc) {
 		getFiles().add(doc);
 	}
@@ -43,6 +56,10 @@ public class Folder {
 	
 	public String ShowDocumentContent(Document doc) { 
 		return getFiles().get(getFiles().indexOf(doc)).printFile();
+	}
+	
+	public ArrayList<Document> folderContent() {
+		return getFiles();
 	}
 	
 	public String printFolderContent() { 
@@ -74,4 +91,15 @@ public class Folder {
 		}
 		return sb.toString();
 	}	
+	
+	public Document fileForName(String Name, DocumentType type, String documentText) {
+		for (Document document : files) {
+			if (document.getDocumentName().equals(Name) && 
+					document.getDocumentType().equals(type) && 
+					document.getDocumentText().toString().equals(documentText)) {
+				return document;
+			}
+		}
+		return null;
+	}
 }

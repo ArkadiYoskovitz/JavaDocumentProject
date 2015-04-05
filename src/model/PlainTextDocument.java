@@ -13,7 +13,7 @@ public class PlainTextDocument extends Document {
 	// Constructors
 	public PlainTextDocument()
 	{
-		this(new Date() + "-New plain text document");
+		this(new Date().getTime() + "-New plain text document");
 	}
 	public PlainTextDocument(String name)
 	{
@@ -21,6 +21,11 @@ public class PlainTextDocument extends Document {
 		this.documentCreationDate = new Date();
 		this.documentText = new StringBuffer();
 	}
+	public PlainTextDocument(String name, String text) {
+		this(name);
+		this.documentText.append(text);
+	} 
+
 	// Access methods 
 	@Override
 	public String getDocumentName() {
@@ -64,6 +69,10 @@ public class PlainTextDocument extends Document {
 		}
 		return documentOutprint.toString();
 		
+	}
+	@Override
+	public DocumentType getDocumentType() {
+		return DocumentType.PlainTextDocument;
 	}
 
 }

@@ -1,21 +1,35 @@
 package app;
 
-import controller.MainViewController;
+import java.awt.EventQueue;
+
+import controller.ViewController;
 
 public class AppDelegate {
-	// Attribute
-	private static MainViewController mainViewController;
 
-	// Main 
+	// Attribute
+	private static ViewController mainViewController;
+
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
-		setMainViewController(new MainViewController());
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					setMainViewController(new ViewController());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
-	public static MainViewController getMainViewController() {
+	public static ViewController getMainViewController() {
 		return mainViewController;
 	}
 
-	public static void setMainViewController(MainViewController mainViewController) {
+	public static void setMainViewController(ViewController mainViewController) {
 		AppDelegate.mainViewController = mainViewController;
 	}
+
 }

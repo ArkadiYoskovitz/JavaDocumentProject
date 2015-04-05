@@ -8,6 +8,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import model.Document;
+import model.DocumentType;
 import model.Folder;
 import model.PlainTextDocument;
 import model.WordDocument;
@@ -22,6 +23,9 @@ public class ViewController implements ActionListener, DocumentListener {
 
 	// Constructors
 	public ViewController() {
+		// Initialize documents
+		setCurrentDocument(getDefaultDocument());
+
 		// Initialize Data
 		this.folders = new ArrayList<Folder>();
 		this.folders.add(new Folder("My documents"));
@@ -72,7 +76,7 @@ public class ViewController implements ActionListener, DocumentListener {
 	// Listeners - Handle events
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// 1. Folder Refresh ==========================================================================================================================
+		// 01. Folder Refresh ==========================================================================================================================
 		if (e.getSource().equals(getView().getBtnFolderRefresh())) {
 
 			// 1. Refresh the documents list
@@ -84,6 +88,7 @@ public class ViewController implements ActionListener, DocumentListener {
 			// 2.1. Set new document name
 			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
 			getView().getTxtFileNameValue().setEditable(false);
+			getView().getTxtFileNameValue().setEnabled(false);
 
 			// 2.2. Set new document path
 			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
@@ -92,6 +97,7 @@ public class ViewController implements ActionListener, DocumentListener {
 			// 2.3. Set new document text
 			getView().getTxtDocumentText().setText(getCurrentDocument().printFile());
 			getView().getTxtDocumentText().setEditable(false);
+			getView().getTxtDocumentText().setEnabled(false);
 
 			// 4. Set the current document to be read only
 			getView().getBtnDocumentNew().setEnabled(false);
@@ -100,9 +106,11 @@ public class ViewController implements ActionListener, DocumentListener {
 			getView().getBtnDocumentSave().setEnabled(false);
 			getView().getBtnDocumentSaveAs().setEnabled(false);
 
+			// 5. Set the edit button to e disabled
+			getView().getBtnDocumentEdit().setEnabled(false);
 			System.out.println(e.getActionCommand() + " was pressed");
 		} 
-		// 2. Document Show ==========================================================================================================================
+		// 02. Document Show ==========================================================================================================================
 		if (e.getSource().equals(getView().getBtnDocumentShow())) {
 			// 1. Get the selected file
 			Folder selectedFolder = getFolderPath();
@@ -117,6 +125,42 @@ public class ViewController implements ActionListener, DocumentListener {
 			// 2.1. Set new document name
 			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
 			getView().getTxtFileNameValue().setEditable(false);
+			getView().getTxtFileNameValue().setEnabled(false);
+
+			// 2.2. Set new document path
+			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+			getView().getTxtFilePathValue().setEditable(false);
+			getView().getTxtFilePathValue().setEnabled(false);
+
+			// 2.3. Set new document text
+			getView().getTxtDocumentText().setText(getCurrentDocument().printFile());
+			getView().getTxtDocumentText().setEditable(false);
+			getView().getTxtDocumentText().setEnabled(false);
+
+			// 3. Disable document controls
+			getView().getBtnDocumentNew().setEnabled(false);
+			getView().getBtnDocumentClear().setEnabled(false);
+			getView().getBtnDocumentSave().setEnabled(false);
+			getView().getBtnDocumentSaveAs().setEnabled(false);
+
+			// 4. Set the edit button to e disabled
+			getView().getBtnDocumentEdit().setEnabled(true);
+
+			// 5. Set the currant document type
+			getView().getComboBoxDocumentType().setEnabled(false);
+			getView().getComboBoxDocumentType().setSelectedItem(getCurrentDocument().getDocumentType());
+			System.out.println(e.getActionCommand() + " was pressed");		
+		} 
+		// 03. Document Add ==========================================================================================================================
+		if (e.getSource().equals(getView().getBtnDocumentAdd())) {
+
+			// 1. Set the current document to a new document
+			setCurrentDocument(new PlainTextDocument("New Document","Please press edit to enter editing mode"));
+
+			// 2.1 Set the UI to the current document data
+			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+			getView().getTxtFileNameValue().setEnabled(true);
+			getView().getTxtFileNameValue().setEditable(true);
 
 			// 2.2. Set new document path
 			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
@@ -126,22 +170,22 @@ public class ViewController implements ActionListener, DocumentListener {
 			getView().getTxtDocumentText().setText(getCurrentDocument().printFile());
 			getView().getTxtDocumentText().setEditable(false);
 
-			// Disable document controls
-			getView().getBtnDocumentNew().setEnabled(true);
-			getView().getBtnDocumentClear().setEnabled(true);
-			getView().getComboBoxDocumentType().setEnabled(true);
-			getView().getBtnDocumentSave().setEnabled(true);
-			getView().getBtnDocumentSaveAs().setEnabled(true);
+			// 3. Disable document controls
+			getView().getBtnDocumentNew().setEnabled(false);
+			getView().getBtnDocumentClear().setEnabled(false);
+			getView().getBtnDocumentSave().setEnabled(false);
+			getView().getBtnDocumentSaveAs().setEnabled(false);
 
-			System.out.println(e.getActionCommand() + " was pressed");		
-		} 
-		// 3. ==========================================================================================================================
-		// TODO DocumentAdd
-		//		if (e.getSource().equals(getView().getBtnDocumentAdd())) {
-		//			addNewDocument();
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		}  
-		// 4. Document Delete ==========================================================================================================================
+			// 4. Set the currant document type
+			getView().getComboBoxDocumentType().setEnabled(false);
+			getView().getComboBoxDocumentType().setSelectedItem(getCurrentDocument().getDocumentType());
+
+			// 5. Enter editing mode
+			getView().getBtnDocumentEdit().setEnabled(true);
+
+			System.out.println(e.getActionCommand() + " was pressed");
+		}  
+		// 04. Document Delete ==========================================================================================================================
 		if (e.getSource().equals(getView().getBtnDocumentDelete())) {
 			// 1. Get the selected file
 			Folder selectedFolder = getFolderPath();
@@ -184,51 +228,307 @@ public class ViewController implements ActionListener, DocumentListener {
 
 			System.out.println(e.getActionCommand() + " was pressed");
 		} 
-		// 5. ==========================================================================================================================
-		// TODO DocumentEdit
-		//		if (e.getSource().equals(getView().getBtnDocumentEdit())) {
-		//			showSelectedDocument();
-		//			updateDocumentUIModeEdit(getCurrentDocument());
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		} 
-		//		if (e.getSource().equals(getView().getBtnDocumentNew())) {
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		} 
-		//
-		//		if (e.getSource().equals(getView().getBtnDocumentClear())) {
-		//			// Get the selected file
-		//			Folder selectedFolder = getFolderPath();
-		//			int selectedIndex = getView().getDocumentsList().getSelectedIndex();
-		//
-		//			if (selectedIndex >= 0) {
-		//				Document doc = selectedFolder.folderContent().get(selectedIndex);
-		//				setCurrentDocument(doc);
-		//				getCurrentDocument().deleteAllText();
-		//				updateDocumentUIModeShow(getCurrentDocument());
-		//				updateDocumentUIModeEdit(getCurrentDocument());
-		//			}
-		//			getView().getTxtDocumentText().setText(null);
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		} 
+		// 05. Document Edit ==========================================================================================================================
+		if (e.getSource().equals(getView().getBtnDocumentEdit())) {
+			if (!getCurrentDocument().equals(getDefaultDocument())) {
+				// 1. Set new document name
+				getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+				getView().getTxtFileNameValue().setEditable(true);
+				getView().getTxtFileNameValue().setEnabled(true);
 
-		// ==========================================================================================================================
-		// TODO DocumentSave
-		//		if (e.getSource().equals(getView().getBtnDocumentSave())) {
-		//			saveFile();
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		} 
-		// ==========================================================================================================================
-		// TODO DocumentSaveAs
-		//		if (e.getSource().equals(getView().getBtnDocumentSaveAs())) {
-		//			saveFile();
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		}
-		// ==========================================================================================================================
-		// TODO FileNameValue changed
-		//		if (e.getSource().equals(getView().getTxtFileNameValue())) { 
-		//			saveFile();
-		//			System.out.println(e.getActionCommand() + " was pressed");
-		//		}
+				// 2. Set new document path
+				getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+				getView().getTxtFilePathValue().setEditable(false);
+
+				// 3. Set new document text
+				getView().getTxtDocumentText().setText(getCurrentDocument().getDocumentText().toString());
+				getView().getTxtDocumentText().setEditable(true);
+				getView().getTxtDocumentText().setEnabled(true);
+
+				// 4. Enable document controls
+				getView().getBtnDocumentNew().setEnabled(true);
+				getView().getBtnDocumentClear().setEnabled(true);
+				getView().getBtnDocumentSave().setEnabled(true);
+				getView().getBtnDocumentSaveAs().setEnabled(true);
+
+				// 5. Set the currant document type
+				getView().getComboBoxDocumentType().setEnabled(true);
+				getView().getComboBoxDocumentType().setSelectedItem(getCurrentDocument().getDocumentType());
+
+				getView().getBtnDocumentEdit().setEnabled(false);
+			} else {
+				// do nothing
+			}
+			System.out.println(e.getActionCommand() + " was pressed");
+		} 
+		// 06. Document New ==========================================================================================================================
+		if (e.getSource().equals(getView().getBtnDocumentNew())) {
+			// Get the current file name
+			String fileName = getView().getTxtFileNameValue().getText();
+
+			// Get file text
+			String fileText = "";//getView().getTxtDocumentText().getText();
+
+			// Get the file type from the Combo Box Document Type 
+			DocumentType type = (DocumentType) getView().getComboBoxDocumentType().getSelectedItem();
+
+			// Create a new document according to the current selection and set it as the currentDocument
+			Document newDocument;
+			if (type == DocumentType.PlainTextDocument) {
+				newDocument = new PlainTextDocument(fileName, fileText);
+			} else {
+				newDocument = new WordDocument(fileName, fileText);
+			}
+			setCurrentDocument(newDocument);
+
+			// Update the UI
+			// 2.1. Set new document name
+			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+			getView().getTxtFileNameValue().setEditable(true);
+			getView().getTxtFileNameValue().setEnabled(true);
+
+			// 2.2. Set new document path
+			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+			getView().getTxtFilePathValue().setEditable(false);
+			getView().getTxtFilePathValue().setEnabled(false);
+
+			// 2.3. Set new document text
+			getView().getTxtDocumentText().setText(getCurrentDocument().getDocumentText().toString());
+			getView().getTxtDocumentText().setEditable(true);
+			getView().getTxtDocumentText().setEnabled(true);
+
+			// 3. Disable document controls
+			getView().getBtnDocumentNew().setEnabled(true);
+			getView().getBtnDocumentClear().setEnabled(true);
+			getView().getBtnDocumentSave().setEnabled(true);
+			getView().getBtnDocumentSaveAs().setEnabled(true);
+
+			// 4. Set the edit button to e disabled
+			getView().getBtnDocumentEdit().setEnabled(true);
+
+			// 5. Set the currant document type
+			getView().getComboBoxDocumentType().setEnabled(true);
+			getView().getComboBoxDocumentType().setSelectedItem(getCurrentDocument().getDocumentType());
+
+			System.out.println(e.getActionCommand() + " was pressed");
+		} 
+		// 07. Document Clear ==========================================================================================================================
+		if (e.getSource().equals(getView().getBtnDocumentClear())) {
+
+			// 1. Clear the text of the current document 
+			getCurrentDocument().deleteAllText();
+
+			// 2.1. Set new document name
+			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+			getView().getTxtFileNameValue().setEditable(true);
+			getView().getTxtFileNameValue().setEnabled(true);
+
+			// 2.2. Set new document path
+			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+			getView().getTxtFilePathValue().setEditable(false);
+			getView().getTxtFilePathValue().setEnabled(false);
+
+			// 2.3. Set new document text
+			getView().getTxtDocumentText().setText(getCurrentDocument().getDocumentText().toString());
+			getView().getTxtDocumentText().setEditable(true);
+			getView().getTxtDocumentText().setEnabled(true);
+
+			// 3. Disable document controls
+			getView().getBtnDocumentNew().setEnabled(true);
+			getView().getBtnDocumentClear().setEnabled(true);
+			getView().getBtnDocumentSave().setEnabled(true);
+			getView().getBtnDocumentSaveAs().setEnabled(true);
+
+			// 4. Set the edit button to e disabled
+			getView().getBtnDocumentEdit().setEnabled(true);
+
+			// 5. Set the currant document type
+			getView().getComboBoxDocumentType().setEnabled(true);
+			getView().getComboBoxDocumentType().setSelectedItem(getCurrentDocument().getDocumentType());
+
+			System.out.println(e.getActionCommand() + " was pressed");
+		} 
+		// 08. Document Save ==========================================================================================================================
+		if (e.getSource().equals(getView().getBtnDocumentSave())) {
+			// 1. Get the file name from the File Name Value
+			String fileName = getView().getTxtFileNameValue().getText();
+
+			// 2. Get file text
+			String fileText = getView().getTxtDocumentText().getText();
+
+			// 3. Check if the document exist in the DB
+			Document documentToAdd = getCurrentDocument();
+
+			// 4. if it exists then set the values
+			if (documentToAdd != null) {
+
+				documentToAdd.setDocumentName(fileName);
+				documentToAdd.deleteAllText();
+				documentToAdd.appendText(fileText);
+			}
+			// REFRESH LIST
+			// 1. Refresh the documents list
+			getView().reloadDocumentList();
+
+			// 2. Reset the current document shown to a default one
+			setCurrentDocument(getDefaultDocument());
+
+			// 2.1. Set new document name
+			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+			getView().getTxtFileNameValue().setEditable(false);
+
+			// 2.2. Set new document path
+			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+			getView().getTxtFilePathValue().setEditable(false);
+
+			// 2.3. Set new document text
+			getView().getTxtDocumentText().setText(getCurrentDocument().printFile());
+			getView().getTxtDocumentText().setEditable(false);
+
+			// 4. Set the current document to be read only
+			getView().getBtnDocumentNew().setEnabled(false);
+			getView().getBtnDocumentClear().setEnabled(false);
+			getView().getComboBoxDocumentType().setEnabled(false);
+			getView().getBtnDocumentSave().setEnabled(false);
+			getView().getBtnDocumentSaveAs().setEnabled(false);
+
+			System.out.println(e.getActionCommand() + " was pressed");
+		} 
+		// 09. Document Save As ==========================================================================================================================
+		if (e.getSource().equals(getView().getBtnDocumentSaveAs())) {
+			// 1. Get the current selected folder
+			Folder selectedFolder = getFolderPath();
+
+			// 2. Get the file name from the File Name Value
+			String fileName = getView().getTxtFileNameValue().getText();
+
+			// 3. Get file text
+			String fileText = getView().getTxtDocumentText().getText();
+
+			// 4. Get the file type from the Combo Box Document Type 
+			DocumentType type = (DocumentType) getView().getComboBoxDocumentType().getSelectedItem();
+
+			// 5. Check if the document exist in the DB
+			Document documentToAdd = selectedFolder.fileForName(fileName, type, fileText);
+
+			// 6. if it exists then set the values
+			if (documentToAdd != null) {
+
+				documentToAdd.setDocumentName(fileName);
+				documentToAdd.deleteAllText();
+				documentToAdd.appendText(fileText);
+
+			} else {
+				// 7. if it doesn't exists then create a document according to the needed type
+				documentToAdd = getCurrentDocument();
+
+				if (type == DocumentType.PlainTextDocument) {
+					documentToAdd = new PlainTextDocument(fileName, fileText);
+				} else if (type == DocumentType.WordDocument) {
+					documentToAdd = new WordDocument(fileName, fileText);
+				}
+
+				documentToAdd.setDocumentName(fileName);
+				documentToAdd.deleteAllText();
+				documentToAdd.appendText(fileText);
+				selectedFolder.addDocument(documentToAdd);
+			}
+
+			// REFRESH LIST
+			// 1. Refresh the documents list
+			getView().reloadDocumentList();
+
+			// 2. Reset the current document shown to a default one
+			setCurrentDocument(getDefaultDocument());
+
+			// 2.1. Set new document name
+			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+			getView().getTxtFileNameValue().setEditable(false);
+
+			// 2.2. Set new document path
+			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+			getView().getTxtFilePathValue().setEditable(false);
+
+			// 2.3. Set new document text
+			getView().getTxtDocumentText().setText(getCurrentDocument().printFile());
+			getView().getTxtDocumentText().setEditable(false);
+
+			// 4. Set the current document to be read only
+			getView().getBtnDocumentNew().setEnabled(false);
+			getView().getBtnDocumentClear().setEnabled(false);
+			getView().getComboBoxDocumentType().setEnabled(false);
+			getView().getBtnDocumentSave().setEnabled(false);
+			getView().getBtnDocumentSaveAs().setEnabled(false);
+
+			System.out.println(e.getActionCommand() + " was pressed");
+		}
+		// 10. FileNameValue changed ==========================================================================================================================
+		if (e.getSource().equals(getView().getTxtFileNameValue())) { 
+			// 1. Get the current selected folder
+			Folder selectedFolder = getFolderPath();
+
+			// 2. Get the file name from the File Name Value
+			String fileName = getView().getTxtFileNameValue().getText();
+
+			// 3. Get file text
+			String fileText = getView().getTxtDocumentText().getText();
+
+			// 4. Get the file type from the Combo Box Document Type 
+			DocumentType type = (DocumentType) getView().getComboBoxDocumentType().getSelectedItem();
+
+			// 5. Check if the document exist in the DB
+			Document documentToAdd = selectedFolder.fileForName(fileName, type, fileText);
+
+			// 6. if it exists then set the values
+			if (documentToAdd != null) {
+
+				documentToAdd.setDocumentName(fileName);
+				documentToAdd.deleteAllText();
+				documentToAdd.appendText(fileText);
+
+			} else {
+				// 7. if it doesn't exists then create a document according to the needed type
+				documentToAdd = getCurrentDocument();
+
+				if (type == DocumentType.PlainTextDocument) {
+					documentToAdd = new PlainTextDocument(fileName, fileText);
+				} else if (type == DocumentType.WordDocument) {
+					documentToAdd = new WordDocument(fileName, fileText);
+				}
+
+				documentToAdd.setDocumentName(fileName);
+				documentToAdd.deleteAllText();
+				documentToAdd.appendText(fileText);
+				selectedFolder.addDocument(documentToAdd);
+			}
+
+			// REFRESH LIST
+			// 1. Refresh the documents list
+			getView().reloadDocumentList();
+
+			// 2. Reset the current document shown to a default one
+			setCurrentDocument(getDefaultDocument());
+
+			// 2.1. Set new document name
+			getView().getTxtFileNameValue().setText(getCurrentDocument().getDocumentName());
+			getView().getTxtFileNameValue().setEditable(false);
+
+			// 2.2. Set new document path
+			getView().getTxtFilePathValue().setText(getFolderPath().toString() + "\\" + getView().getTxtFileNameValue().getText());
+			getView().getTxtFilePathValue().setEditable(false);
+
+			// 2.3. Set new document text
+			getView().getTxtDocumentText().setText(getCurrentDocument().printFile());
+			getView().getTxtDocumentText().setEditable(false);
+
+			// 4. Set the current document to be read only
+			getView().getBtnDocumentNew().setEnabled(false);
+			getView().getBtnDocumentClear().setEnabled(false);
+			getView().getComboBoxDocumentType().setEnabled(false);
+			getView().getBtnDocumentSave().setEnabled(false);
+			getView().getBtnDocumentSaveAs().setEnabled(false);
+			System.out.println(e.getActionCommand() + " was pressed");
+		}
 	}
 
 	@Override
@@ -254,81 +554,4 @@ public class ViewController implements ActionListener, DocumentListener {
 		Folder selectedFolder = getFolders().get(selectedIndex);
 		return selectedFolder;
 	}
-
-
-	// ===========================================================================================================================================================
-	// NOT IN USE
-	// ===========================================================================================================================================================
-	// Methods
-	//	private void setupNewDocumentOnView() {
-	//		// 1. Set new document name
-	//		getView().getTxtFileNameValue().setText("New file");
-	//		getView().getTxtFileNameValue().setEditable(true);
-	//
-	//		// 2. Set new document path
-	//		Folder selectedFolder = getFolderPath();
-	//		getView().getTxtFilePathValue().setText(selectedFolder.toString() + "\\" + getView().getTxtFileNameValue().getText());
-	//		getView().getTxtFilePathValue().setEditable(false);
-	//
-	//		// 3. Set new document text
-	//		getView().getTxtDocumentText().setText(null);
-	//		getView().getTxtDocumentText().setEditable(true);
-	//	}
-	//
-	//
-	//	private void updateDocumentUIModeEdit(Document doc) {
-	//		getView().getTxtFileNameValue().setEnabled(true);
-	//		getView().getTxtDocumentText().setEnabled(true);
-	//		getView().getTxtDocumentText().setEditable(true);
-	//		getView().getBtnDocumentNew().setEnabled(true);
-	//		getView().getBtnDocumentClear().setEnabled(true);
-	//		getView().getComboBoxDocumentType().setEnabled(true);
-	//		getView().getBtnDocumentSave().setEnabled(true);
-	//		getView().getBtnDocumentSaveAs().setEnabled(true);
-	//
-	//		if (doc != null) {
-	//			if (doc.getDocumentName() != null) {
-	//				if (doc.getDocumentText().length() > 0 ) {
-	//					getView().getTxtFileNameValue().setText(doc.getDocumentName());
-	//					getView().getTxtDocumentText().setText(doc.printFile());	
-	//				}
-	//			}	
-	//		}
-	//	}
-	//
-	//	private void saveFile() {
-	//		// Get the full current selected folder
-	//		Folder selectedFolder = getFolderPath();
-	//
-	//		// Get the file name from the File Name Value
-	//		String fileName = getView().getTxtFileNameValue().getText();
-	//
-	//		// Get file text
-	//		String fileText = getView().getTxtDocumentText().getText();
-	//
-	//		// Get the file type from the Combo Box Document Type 
-	//		DocumentType type = (DocumentType) getView().getComboBoxDocumentType().getSelectedItem();
-	//
-	//		// Search for the file at the full file path location (from the components not the string)
-	//		Document doc;
-	//
-	//		if (getCurrentDocument() != null) {
-	//			doc = selectedFolder.fileForName(fileName, type, fileText);
-	//		} else {
-	//			doc = getCurrentDocument();	
-	//		}
-	//
-	//		// If the file exists update the text content according to the currently displayed text
-	//		if (doc != null) {
-	//			doc.setText(fileText);
-	//		} else {
-	//			// Else create the file according to the current file path (folder + file name) and the currently selected document type
-	//			if (type == DocumentType.PlainTextDocument) {
-	//				selectedFolder.addDocument(new PlainTextDocument(fileName, fileText));
-	//			} else if (type == DocumentType.WordDocument) {
-	//				selectedFolder.addDocument(new WordDocument(fileName, fileText));
-	//			}
-	//		}
-	//		//		refreshDocumentsList();
-	//	}
 }

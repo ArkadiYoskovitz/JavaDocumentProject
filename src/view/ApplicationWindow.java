@@ -346,7 +346,6 @@ public class ApplicationWindow {
 
 		txtDocumentText = new JTextArea();
 		txtDocumentText.setEnabled(false);
-		txtDocumentText.setText("item01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 item01\nitem02\nitem03 \nitem01\nitem02\nitem03 item01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 \nitem01\nitem02\nitem03 item01\nitem02\nitem03 \n");
 		scrollPaneDocument.setViewportView(txtDocumentText);
 
 		btnDocumentEdit = new JButton("Edit");

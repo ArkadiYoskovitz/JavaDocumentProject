@@ -67,4 +67,11 @@ public class WordDocument extends Document {
 	public DocumentType getDocumentType() {
 		return DocumentType.WordDocument;
 	}
+
+	@Override
+	public String toString() {
+		return "WordDocument [documentName=" + documentName + ", documentText="
+				+ documentText + ", documentCreationDate="
+				+ documentCreationDate + "]";
+	}
 }

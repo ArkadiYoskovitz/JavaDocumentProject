@@ -74,5 +74,10 @@ public class PlainTextDocument extends Document {
 	public DocumentType getDocumentType() {
 		return DocumentType.PlainTextDocument;
 	}
-
+	@Override
+	public String toString() {
+		return "PlainTextDocument [documentName=" + documentName
+				+ ", documentText=" + documentText + ", documentCreationDate="
+				+ documentCreationDate + "]";
+	}
 }
